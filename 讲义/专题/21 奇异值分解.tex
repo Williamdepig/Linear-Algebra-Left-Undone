@@ -1,0 +1,246 @@
+\chapter{奇异值分解}
+
+上一讲中我们着重介绍了内积空间上的一些特殊的算子，以及它们的约化分解. 本讲我们将尝试将所得到的结论推广到一般的线性映射上，并给出一个将一般线性映射都“对角化”的方式.
+
+\section{奇异值分解}
+
+我们提出要将一般的线性映射都“对角化”，但在若当标准型的时候我们已经知道，这理应是做不到的，症结在于可能没有足够的特征向量. 所以我们此处的“对角化”并不是使用线性映射本身的特征值和特征向量，而是采取与之相关的特殊的算子的特征值和特征向量. 回忆在对称矩阵部分，我们从一般的矩阵 $ A $ 构造出了 $ A^{\mathrm{T}}A $ 这样一个对称矩阵. 那么采取类似的方法，我们可以从 $ T \in \mathcal{L}(V, W) $ 构造出算子 $ T^*T $，让我们来看看它的性质.
+
+\begin{theorem}{$ T^*T $ 的性质}{T^*T的性质}
+    设 $ T \in \mathcal{L}(V, W) $，则
+    \begin{enumerate}
+        \item $ T^*T $ 是正算子.
+
+        \item $ \ker T^*T = \ker T $.
+
+        \item $ \im T^*T = \im T^* $.
+
+        \item $ \dim \im T = \dim \im T^* = \dim \im T^*T $.
+    \end{enumerate}
+\end{theorem}
+
+而正算子的特征值非负，所以我们可以做出如下的定义.
+
+\begin{definition}{奇异值}{} \index{qiyizhi@奇异值 (singular value)}
+    设 $ T \in \mathcal{L}(V, W) $，则 $ T^*T $ 的特征值的算术平方根称为 $ T $ 的奇异值，降序排列，并且每个奇异值重复 $ \dim E(\lambda, T^*T) $ 次.
+\end{definition}
+
+但这样定义出来的值如何描述 $ T $？我们先从线性映射最基本的部分开始.
+
+\begin{theorem}{}{}
+    设 $ T \in \mathcal{L}(V, W) $，则
+    \begin{enumerate}
+        \item $ T $ 是单射等价于 $ 0 $ 不是 $ T $ 的奇异值.
+
+        \item $ T $ 的正奇异值的个数等于 $ \dim \im T $.
+
+        \item $ T $ 是满射等价于 $ T $ 的正奇异值的个数等于 $ \dim W $.
+    \end{enumerate}
+\end{theorem}
+
+借助 \nameref{thm:T^*T的性质}和单射满射的等价条件即可证明.
+
+特征值对应有特征向量，奇异值也对应有奇异向量.
+
+\begin{definition}{}{}
+    设 $ T \in \mathcal{L}(V, W) $，奇异值为 $ s $，若存在 $ v \in V, w \in W $ 使得 $ Tv = sw $，$ T^*w = sv $，则称 $ v $ 为 $ T $ 关于 $ s $ 的左奇异向量，$ w $ 为 $ T $ 关于 $ s $ 的右奇异向量.
+\end{definition}
+
+$ T^*T $ 除去其特征值的性质外，更重要的在于其是一个自伴算子，所以我们可以对它应用谱定理，并由此给出我们所谓的“对角化”的方式——奇异值分解.
+
+\begin{theorem}{奇异值分解}{} \index{qiyizhi!fenjie@奇异值分解 (singular value decomposition)}
+    设 $ T \in \mathcal{L}(V, W) $ 有正奇异值 $ s_1, \ldots , s_m $. 则存在 $ V $ 的一组标准正交组 $ e_1, \ldots, \e_m $ 和 $ W $ 的标准正交组 $ f_1, \ldots, f_m $ 使得 $ \forall v \in V $ 均有$ Tv = s_1 \langle v, e_1 \rangle f_1 + \cdots + s_m \langle v, e_m \rangle f_m $.
+\end{theorem}
+
+\begin{proof}
+    设 $ s_1, \ldots, s_n $ 为 $ T $ 的所有奇异值，也就有 $ n = \dim V $. 因为 $ T^*T $ 是正算子，所以对其应用谱定理，存在 $ V $ 的标准正交基 $ e_1, \ldots, e_n $ 使得 $ T^*Te_k = s_k^2e_k $，$ k = 1, \ldots, n $.
+
+    首先对正奇异值部分进行讨论. 对 $ k = 1, \ldots, m $，令 $ f_k = \dfrac{1}{s_k}Te_k $，即对应的右奇异向量. 则对于 $j, k \in \{1, \ldots, m\}$，有
+
+    \[
+        \langle f_j, f_k \rangle = \dfrac{1}{s_j s_k} \langle Te_j, Te_k \rangle = \dfrac{1}{s_j s_k} \langle e_j, T^*Te_k \rangle = \dfrac{1}{s_j s_k} \langle e_j, s_k^2e_k \rangle = \dfrac{s_k}{s_j} \langle e_j, e_k \rangle = \delta_{jk}.
+    \]
+
+    所以 $ f_1, \ldots, f_m $ 是 $ W $ 的标准正交组. 事实上，考虑到左奇异向量和右奇异向量分别是 $ T^*T $ 和 $ TT^* $ 的特征向量，这一点是显然的.
+
+    而对于零奇异值部分，$k \in \{m+1, \ldots, n\}$，$ T^*Te_k = 0 $，且 $ \ker T^*T = \ker T $，所以 $ Te_k = 0 $.
+
+    从而 $ \forall v \in V $，有
+
+    \begin{align*}
+        Tv & = T(\langle v, e_1 \rangle e_1 + \cdots + \langle v, e_n \rangle e_n)       \\
+           & = \langle v, e_1 \rangle Te_1 + \cdots + \langle v, e_m \rangle Te_m        \\
+           & = s_1 \langle v, e_1 \rangle f_1 + \cdots + s_m \langle v, e_m \rangle f_m.
+    \end{align*}
+
+    命题得证.
+\end{proof}
+
+对于线性映射而言，使用两组不同的基是稀疏平常的事情；但对于算子而言，我们频繁地使用同一组基来表示，经常忽视了这一点. 所以，我们将所有一般线性映射“对角化”的方法建立在使用两组不同的基上，这与若当标准型的结果并不矛盾.
+
+由此我们也可以得出 $ T $ 在这两组标准正交基下的矩阵表示，设为 $ A = (a_{ij})_{m \times n} $，则 $ a_{ij} = \begin{cases}
+        s_i, & 1 \leqslant i = j \leqslant m, \\
+        0,   & \text{其他情况}.
+    \end{cases} $. 其形式也非常类似于对角矩阵，我们将其定义为\term{矩形对角矩阵}.
+
+\begin{definition}{矩形对角矩阵}{} \index{juxingduijiaojuzhen@矩形对角矩阵 (rectangular diagonal matrix)}
+    设 $ A = (a_{ij})_{m \times n} $，则称 $ A $ 为矩形对角矩阵，若 $ a_{ij} = 0 $ 当 $ i \neq j $ 时.
+\end{definition}
+
+通过线性映射的矩阵表示的过程，我们也可以得到矩阵形式的奇异值分解.
+
+\begin{theorem}{}{}
+    设 $ A $ 为一 $ m \times n $ 阶矩阵，则 $ A $ 的奇异值分解为 $ A = U\Sigma V^* $，其中 $ U $ 为 $ m \times m $ 阶酉矩阵，$ V $ 为 $ n \times n $ 阶酉矩阵，$ \Sigma $ 为 $ m \times n $ 阶非负实数矩形对角矩阵.
+\end{theorem}
+
+这也表明所有矩阵的作用都可以分解为原空间上的旋转、拉伸和到达空间上的旋转三部分.
+
+\section{奇异值分解的应用}
+
+\subsection{奇异值的几何解释}
+
+\subsection{极分解定理}
+
+我们继续算子与数的类比. 每个非零复数 $ z $ 都可以写成如下形式
+
+\[ z = \left(\dfrac{z}{\lvert z \rvert}\right)\lvert z \rvert = \left(\dfrac{z}{\lvert z \rvert}\right)\sqrt{\overline{z}z} \]
+其中 $ \dfrac{z}{\lvert z \rvert} $ 是一个单位复数. 那么由此我们可以类比得出一个对 $ V $ 上任意算子的漂亮的描述，因其形式类似于复数极坐标分解，所以称为\term{极分解定理}.
+
+\begin{theorem}{极分解定理}{} \index{jifenjiedingli@极分解定理 (polar decomposition theorem)}
+    设 $ T \in \mathcal{L}(V) $，则存在一个等距同构 $ S \in \mathcal{L}(V) $，使得 $ T = S\sqrt{T^*T} $.
+\end{theorem}
+
+\begin{proof}
+    首先 $ \forall T \in \mathcal{L}(V) $，$ T^{*}T $ 都是正算子，所以 $ \sqrt{T^*T} $ 的定义是合理的.
+
+    然后 $ \forall v \in V $，有
+    \begin{align*}
+        \lVert Tv \rVert^2 = \langle Tv, Tv \rangle & = \langle T^*Tv, v \rangle                   \\
+                                                    & = \langle \sqrt{T^*T}\sqrt{T^*T}v, v \rangle \\
+                                                    & = \langle \sqrt{T^*T}v, \sqrt{T^*T}v \rangle \\
+                                                    & = \lVert \sqrt{T^*T}v \rVert^2.
+    \end{align*}
+
+    所以 $ \forall v \in V ,\enspace \lVert Tv \rVert = \lVert \sqrt{T^*T}v \rVert $.
+
+    由此我们定义一个线性映射 $ S_1: \im \sqrt{T^*T} \rightarrow \im T $ 为
+    \[ S_1(\sqrt{T^*T}v) = Tv. \]
+
+    接下来要做的就是把这个 $ S_1 $ 扩张成一个等距同构 $ S \in \mathcal{L}(V) $使得 $ T = S\sqrt{T^*T} $. 不过在这之前得先验证 $ S_1 $ 是良定义的.
+
+    设 $ v_1, v_2 \in V $ 使得 $ \sqrt{T^*T}v_1 = \sqrt{T^*T}v_2 $，则
+    \begin{align*}
+        \lVert Tv_1 - Tv_2 \rVert & = \lVert T(v_1 - v_2) \rVert                    \\
+                                  & = \lVert \sqrt{T^*T}(v_1 - v_2)\rVert           \\
+                                  & = \lVert \sqrt{T^*T}v_1 - \sqrt{T^*T}x_2 \rVert \\
+                                  & = 0,
+    \end{align*}
+
+    得出 $ Tv_1 = Tv_2 $，所以 $ S_1 $ 是良定义的. 线性性结合范数便可以验证，不多赘述.
+
+    从而 $ \forall u \in \im \sqrt{T^*T} $ 有 $ \lVert S_1u \rVert = \lVert u \rVert $.
+
+    特别地，$ S_1 $ 是单射，由线性映射基本定理可得
+    \[ \dim \enspace \im \sqrt{T^*T} = \dim \enspace \im T. \]
+    而这也代表着 $ \dim(\im \sqrt{T^*T})^{\perp} = \dim(\im T)^{\perp} $. 那么就可以取 $ (\im \sqrt{T^*T})^{\perp} $ 的一组标准正交基 $ e_1, \ldots , e_m $ 和$ (\im T)^{\perp} $ 的一组标准正交基 $ f_1, \ldots, f_m $. 因为两个空间的维数相同，所以这两组标准正交基的长度相同（记为 $ m $）.
+
+    由此定义线性映射 $ S_2: (\im \sqrt{T^*T})^{\perp} \rightarrow (\im T)^{\perp} $ 为
+    \[ S_2(a_1e_1 + \cdots + a_me_m) = a_1f_1 + \cdots + a_mf_m. \]
+    所以 $ \forall w \in (\im \sqrt{T^*T})^{\perp} $ 均有 $ \lVert S_2w \rVert = \lVert w \rVert $.
+
+    到这里我们想要的等距同构 $ S $ 就已经呼之欲出了. $ \forall v \in V, v = u + w $，其中 $ u \in \im \sqrt{T^*T} $，$ w \in (\im \sqrt{T^*T})^{\perp} $，将 $ S $ 定义为
+    \[ Sv = S_1u + S_2w. \]
+
+    $ \forall v \in V $ 均有
+    \[ S(\sqrt{T^*T}v) = S_1(\sqrt{T^*T}v) = Tv, \]
+
+    所以 $ T = S\sqrt{T^*T} $. 下面就是确确实实地证明 $ S $ 事实上是一个等距同构.
+
+    $ \forall v \in V $，有
+    \[ \lVert Sv \rVert^2 = \lVert S_1u + S_2w \rVert^2     = \lVert S_1u \rVert^2 + \lVert S_2w \rVert^2 = \lVert u \rVert^2 + \lVert w \rVert^2 = \lVert v \rVert^2 \]
+
+    命题得证.
+\end{proof}
+
+极分解定理将所有一般的算子表成了一个等距同构和一个正算子的乘积，而这两种算子我们之前的章节都已经给出了完全的描述. 所以我们也得到了一般算子的第二种刻画方式.
+
+\subsection{特征人脸算法}
+
+奇异值分解的存在性在经典的人脸识别算法——特征人脸算法中得到了应用，使得最原始版本的特征人脸算法得以大幅加速. 首先介绍如下符号：
+
+\begin{itemize}
+    \item $m$: 人脸数量
+    \item $n$: 每张人脸图像的像素数
+    \item $D = \begin{pmatrix}
+        x_1^\mathrm{T} \\
+        \vdots \\
+        x_m^\mathrm{T} \\
+    \end{pmatrix}\in \mathbf{R}^{m\times n}$: 人脸数据矩阵，每一行 $x_i^\mathrm{T} \in \mathbf{R}^n$ 代表一张人脸图像
+    \item $A=D - \overline{D}$: 中心化后的人脸数据矩阵，其中$\overline{D} = \begin{pmatrix}
+        \overline{x}^\mathrm{T} \\
+        \vdots \\
+        \overline{x}^\mathrm{T} \\
+    \end{pmatrix}$，$\overline{x} = \mathbf{E}(X) = \dfrac{1}{m}\sum\limits_{i=1}^m x_i$
+\end{itemize}
+
+从概率论的观点来看，具体的人脸 $x_1, \ldots, x_m$ 都是从自然人脸随机变量 $X$ 中的具体观测值，服从一个复杂的概率分布. 利用 $X$ 的协方差矩阵 (covariance matrix) 可以刻画人脸之间的相关性，即
+
+\[ \mathrm{Cov}(X) = \dfrac{1}{m-1}\sum_{i=1}^m (x_i - \mathbf{E}(X))(x_i - \mathbf{E}(X)) = \dfrac{1}{m-1} A^{\mathrm{T}}A \]
+
+特征人脸算法的本质在于将人脸图像从高维的像素矩阵表示 $x\in \mathbf{R}^n$ 投影到一个低维的特征空间，并寻求最小的投影损失. 主成分分析方法证明，选择协方差的特征向量作为投影基，再从特征值的绝对值从高到低选择前 $k$ 个特征向量构成低维特征空间对人脸进行表示，可以得到最小的投影损失. 这就要求我们\textbf{对协方差矩阵进行特征值分解}.
+
+在特征人脸算法的应用场景中，人脸数量 $m$ 一般只有几百张，而每张人脸图像的像素数 $n$ 一般至少也是上万的级别. 如果直接对 $A^{\mathrm{T}}A$ 进行特征值分解，计算量是非常大的. 而利用 $A$ 的\textbf{奇异值分解的存在性}，可以通过对 $AA^{\mathrm{T}}$ 进行特征值分解，从而间接得到 $A^{\mathrm{T}}A$ 的前 $k$ 个特征向量，大幅减少计算量.
+
+具体来说，根据 $A\in \mathbf{R}^{m\times n}$ 的奇异值分解的存在性，存在正交矩阵 $U\in \mathbf{R}^{m\times m}$（左奇异矩阵）和 $V\in \mathbf{R}^{m\times m}$ （右奇异矩阵）使得
+
+\[ A = U\Sigma V^{\mathrm{T}} \]
+
+其中 $\Sigma = (s_{ij})_{m\times n}$, $s_{ii}=s_i$ 是奇异值，$\Sigma$ 中除了 $s_{ii}$ 之外的元素全为零. 由于
+
+\begin{gather*}
+    AA^{\mathrm{T}} = (U\Sigma V^{\mathrm{T}})(U\Sigma V^{\mathrm{T}})^{\mathrm{T}} = U \Sigma (V^{\mathrm{T}} V) \Sigma U^{\mathrm{T}} = U \Sigma^2 U^{\mathrm{T}} \\
+    A^{\mathrm{T}}A = (U\Sigma V^{\mathrm{T}})^{\mathrm{T}}(U\Sigma V^{\mathrm{T}}) = V \Sigma (U^{\mathrm{T}} U) \Sigma V^{\mathrm{T}} = V \Sigma^2 V^{\mathrm{T}}
+\end{gather*}
+
+可以看出这就是用正交变换将 $A^{\mathrm{T}}A$ 和 $AA^{\mathrm{T}}$ 对角化的过程. 可以证明，奇异值分解所需要的矩阵 $U, V$ , 就分别是 $AA^{\mathrm{T}}$ 和 $A^{\mathrm{T}}A$ 的正交特征向量矩阵.
+
+将 $U$, $V$ 用列向量形式表示：
+
+\[ U = (u_1, \ldots, u_m), \quad V = (v_1, \ldots, v_n) \]
+
+$u_i, v_i$ 分别为 $U, V$ 对应位置的特征向量，共享特征值 $\lambda_i$（即奇异值 $s_i$ 的平方）. 根据 $u_i$ 是 的$AA^{\mathrm{T}}$ 的特征向量，有
+
+\[ AA^{\mathrm{T}} u_i = \lambda_i u_i \]
+
+两边左乘 $A^{\mathrm{T}}$，根据 $\lambda_i$ 对矩阵为数乘可将其提到最左边，可以得到
+
+\[ (A^{\mathrm{T}}A)A^{\mathrm{T}} u_i = \lambda_i A^{\mathrm{T}} u_i \]
+
+可知 $A^{\mathrm{T}} u_i$ 就是 $A^{\mathrm{T}}A$ 的特征向量，根据对应关系，就是 $v_i$ . 因此有
+
+\[ (v_1, \ldots, v_k) = A^{\mathrm{T}}(u_1, \ldots, u_k) \]
+
+$v_1, \ldots, v_k$ 就是我们希望将人脸投影到的低维特征空间，$k$ 是手工选择的一个控制特征空间维度的参数. 由于实践中 $k$ 一般取小于 $m$ 的值已经能达到很小的投影损失，因此仅对 $AA^{\mathrm{T}}$ 进行特征值分解是可行的.
+
+
+\subsection*{算子范数}
+
+\begin{summary}
+
+\end{summary}
+
+\begin{exercise}
+    % \exquote[]{}
+
+    \begin{exgroup}
+        \item
+    \end{exgroup}
+
+    \begin{exgroup}
+        \item
+    \end{exgroup}
+
+    \begin{exgroup}
+        \item
+    \end{exgroup}
+\end{exercise}
